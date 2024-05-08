@@ -1,0 +1,30 @@
+[
+    {
+      "id": 1,
+      "name": "California",
+      "capital": "Sacramento",
+      "latitude": 36.7783,
+      "longitude": -119.4179
+    },
+    {
+      "id": 2,
+      "name": "Texas",
+      "capital": "Austin",
+      "latitude": 31.0545,
+      "longitude": -97.5635
+    },
+    {
+      "id": 3,
+      "name": "New York",
+      "capital": "Albany",
+      "latitude": 42.6525,
+      "longitude": -73.7572
+    },
+    {
+      "id": 4,
+      "name": "Florida",
+      "capital": "Tallahassee",
+      "latitude": 30.4382,
+      "longitude": -84.2807
+    }
+  ]

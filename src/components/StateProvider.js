@@ -9,20 +9,12 @@ const StateProvider = ({ children }) => {
   const [gameMode, setGameMode] = useState('name');
 
   useEffect(() => {
-    const fetchStateData = async () => {
-      try {
-        const response = await fetch('State-Data.json');
-        if (!response.ok) {
-          throw new Error(`HTTP error ${response.status}`);
-        }
-        const data = await response.json();
-        setStateData(data);
-      } catch (error) {
-        console.error('Error fetching state data:', error);
-      }
-    };
-
-    fetchStateData();
+    try {
+      const data = require('./State-Data.json');
+      setStateData(data);
+    } catch (error) {
+      console.error('Error fetching state data:', error);
+    }
   }, []);
 
   const handleStateClick = (state) => {

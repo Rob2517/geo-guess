@@ -8,9 +8,11 @@ const shouldShowStateName = (state, selectedState, handleCityGuess) => {
 
 const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, shouldShowStateNameFunc, handleStateGuess }) => {
   const [guessedState, setGuessedState] = useState('');
+  const [isCorrect, setIsCorrect] = useState(false);
 
   const handleGuess = () => {
-    handleStateGuess(state, guessedState);
+    const isGuessCorrect = handleStateGuess(state, guessedState);
+    setIsCorrect(isGuessCorrect);
     setGuessedState('');
   };
 
@@ -36,6 +38,8 @@ const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, sh
               placeholder="Enter state name"
             />
             <button onClick={handleGuess}>Guess</button>
+            {isCorrect && <p style={{ color: 'green' }}>Correct!</p>}
+            {isCorrect === false && <p style={{ color: 'red' }}>Incorrect.</p>}
           </div>
         )}
       </Popup>
@@ -64,9 +68,11 @@ const Map = ({ stateData, selectedState, onStateClick, stateIcon, onCityGuess, s
       // Correct guess, update the score
       setScore(score + 1);
       console.log('Correct guess! Score:', score + 1);
+      return true;
     } else {
       // Incorrect guess, show an error message
       console.log('Incorrect guess.');
+      return false;
     }
   };
 

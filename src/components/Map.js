@@ -6,7 +6,14 @@ const shouldShowStateName = (state, selectedState, handleCityGuess) => {
   return selectedState === state || (selectedState && handleCityGuess(state, selectedState.capital) === true);
 };
 
-const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, shouldShowStateNameFunc }) => {
+const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, shouldShowStateNameFunc, handleStateGuess }) => {
+  const [guessedState, setGuessedState] = useState('');
+
+  const handleGuess = () => {
+    handleStateGuess(state, guessedState);
+    setGuessedState('');
+  };
+
   return (
     <Marker
       key={state.id}
@@ -20,7 +27,16 @@ const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, sh
             <p>Capital: {state.capital}</p>
           </div>
         ) : (
-          <p>Guess the state</p>
+          <div>
+            <p>Guess the state</p>
+            <input
+              type="text"
+              value={guessedState}
+              onChange={(e) => setGuessedState(e.target.value)}
+              placeholder="Enter state name"
+            />
+            <button onClick={handleGuess}>Guess</button>
+          </div>
         )}
       </Popup>
     </Marker>
@@ -30,15 +46,28 @@ const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, sh
          prevProps.selectedState === nextProps.selectedState &&
          prevProps.handleCityGuess === nextProps.handleCityGuess &&
          prevProps.stateIcon === nextProps.stateIcon &&
-         prevProps.shouldShowStateNameFunc === nextProps.shouldShowStateNameFunc;
+         prevProps.shouldShowStateNameFunc === nextProps.shouldShowStateNameFunc &&
+         prevProps.handleStateGuess === nextProps.handleStateGuess;
 });
 
 const Map = ({ stateData, selectedState, onStateClick, stateIcon, onCityGuess, showSolution }) => {
   const [guessedCity, setGuessedCity] = useState('');
+  const [score, setScore] = useState(0);
 
   const handleCityGuess = (state) => {
     onCityGuess(state, guessedCity);
     setGuessedCity('');
+  };
+
+  const handleStateGuess = (state, guess) => {
+    if (guess.toLowerCase() === state.name.toLowerCase()) {
+      // Correct guess, update the score
+      setScore(score + 1);
+      console.log('Correct guess! Score:', score + 1);
+    } else {
+      // Incorrect guess, show an error message
+      console.log('Incorrect guess.');
+    }
   };
 
   return (
@@ -56,6 +85,7 @@ const Map = ({ stateData, selectedState, onStateClick, stateIcon, onCityGuess, s
           handleCityGuess={handleCityGuess}
           stateIcon={stateIcon}
           shouldShowStateNameFunc={shouldShowStateName}
+          handleStateGuess={handleStateGuess}
           eventHandlers={{
             click: () => onStateClick(state),
           }}
@@ -75,6 +105,10 @@ const Map = ({ stateData, selectedState, onStateClick, stateIcon, onCityGuess, s
           </Popup>
         </StateMarker>
       ))}
+
+      <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
+        <h3>Score: {score}</h3>
+      </div>
     </MapContainer>
   );
 };

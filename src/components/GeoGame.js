@@ -4,10 +4,13 @@ import stateData from './State-Data.json';
 import L from 'leaflet';
 import markerIcon from '../img/pin.png'; 
 
+export const maxScore = '/50';
+
 const GeoGame = () => {
-  console.log('stateData:', stateData);
   const [selectedState, setSelectedState] = useState(null);
   const [score, setScore] = useState(0);
+  const [guessedStates, setGuessedStates] = useState([]);
+  
 
   const handleStateClick = (state) => {
     setSelectedState(state);
@@ -15,9 +18,15 @@ const GeoGame = () => {
 
   const handleCityGuess = (state, guess) => {
     if (guess.toLowerCase() === state.capital.toLowerCase()) {
-      console.log('Correct guess!');
+      if (!guessedStates.includes(state.id)) {
+      setScore(score + 1);
+      setGuessedStates([...guessedStates, state.id]);
+      console.log('Correct guess! Score:', score, maxScore);
     } else {
-      console.log('Incorrect guess.');
+      console.log('You already guessed this state.');
+    }
+    } else {
+      console.log('Incorrect guess. Score:', score, maxScore);
     }
   };
 
@@ -27,13 +36,10 @@ const GeoGame = () => {
 
   const customIcon = L.icon({
     iconUrl: markerIcon,
-    iconSize: [32, 32],
-
+    iconSize: [20, 25],
     iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
     iconDefaultUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   });
-
- 
 
   return (
     <div>
@@ -45,7 +51,7 @@ const GeoGame = () => {
         onCityGuess={handleCityGuess}
         showSolution={showSolution}
         score={score}
-        setScore={setScore}
+        guessedStates={guessedStates}
       />
     </div>
   );

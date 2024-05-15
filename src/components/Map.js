@@ -7,7 +7,7 @@ const shouldShowStateName = (state, selectedState, handleCityGuess) => {
   return selectedState === state || (selectedState && handleCityGuess(state, selectedState.capital) === true);
 };
 
-const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, shouldShowStateNameFunc, handleStateGuess, score, setScore, guessedStates, onStateClick}) => {
+const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, shouldShowStateNameFunc, handleStateGuess, score, setScore, guessedStates, }) => {
   const [guessedState, setGuessedState] = useState('');
   const [isCorrect, setIsCorrect] = useState(null);
   const [hasBeenGuessed, setHasBeenGuessed] = useState(guessedStates.includes(state.id));
@@ -20,6 +20,16 @@ const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, sh
       setHasBeenGuessed(true);
     }
     setGuessedState('');
+  };
+
+  const handleSolve = () => {
+    const isGuessCorrect = handleStateGuess(state, state.name);
+    setIsCorrect(isGuessCorrect);
+    if (isGuessCorrect) {
+      setScore((prevScore) => prevScore + 1);
+      setHasBeenGuessed(true);
+    }
+    setGuessedState(state.name);
   };
 
   return (
@@ -43,11 +53,13 @@ const StateMarker = memo(({ state, selectedState, handleCityGuess, stateIcon, sh
               type="text"
               value={guessedState}
               onChange={(e) => setGuessedState(e.target.value)}
-              placeholder="Enter state name"
+              placeholder={hasBeenGuessed ? state.name : 'Enter state name'}
               disabled={hasBeenGuessed}
             />
-            <button onClick={handleGuess}disabled={hasBeenGuessed}>Guess</button>
-            {isCorrect === true && <p style={{ color: 'green' }}>Correct!</p>}
+            <button onClick={handleGuess} disabled={hasBeenGuessed}>Guess</button>
+            <button onClick={handleSolve} disabled={hasBeenGuessed}>Solve</button>
+
+            {isCorrect === true && (<p style={{ color: 'green' }}>Correct! The capital is {state.capital}</p>)}
             {isCorrect === false && <p style={{ color: 'red' }}>Incorrect.</p>}
             <p>Your score is: {score}{maxScore}</p>
           </div>
